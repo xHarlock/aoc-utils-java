@@ -26,3 +26,5 @@ replay_pid*
 /target/
 /out/
 /.idea/
+token.txt
+/src/main/resources/

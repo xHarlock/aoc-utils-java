@@ -1,4 +1,4 @@
-package dev.zawarudo.data;
+package dev.zawarudo.aoc_utils.data;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

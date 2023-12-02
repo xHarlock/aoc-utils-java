@@ -1,4 +1,4 @@
-package dev.zawarudo.data;
+package dev.zawarudo.aoc_utils.data;
 
 /**
  * Represents a single day of the Advent of Code.
