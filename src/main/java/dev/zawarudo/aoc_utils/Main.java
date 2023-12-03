@@ -1,8 +1,6 @@
 package dev.zawarudo.aoc_utils;
 
-import com.sun.jdi.CharType;
 import dev.zawarudo.aoc_utils.graph.AdventOfCodeGraph;
-import dev.zawarudo.aoc_utils.graph.BarChart;
 import dev.zawarudo.aoc_utils.graph.ChartType;
 
 import javax.imageio.ImageIO;
@@ -38,6 +36,6 @@ public class Main {
     }
 
     private static String loadToken() throws IOException {
-        return Files.readString(Path.of("token.txt"));
+        return Files.readString(Path.of("token.txt")).trim();
     }
 }
