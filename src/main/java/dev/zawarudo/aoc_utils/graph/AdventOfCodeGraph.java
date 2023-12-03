@@ -12,7 +12,7 @@ public final class AdventOfCodeGraph {
 
     private static final Color GOLD = Color.decode("#FFFF66");
     private static final Color SILVER = Color.decode("#9999CC");
-    private static final Color GREY = Color.decode("#333333");
+    private static final Color GREY = Color.decode("#444444");
 
     private static final int MAX_PARTICIPANTS = 200;
     private static final int MAX_DAYS = 25;
@@ -99,7 +99,7 @@ public final class AdventOfCodeGraph {
 
         drawGrid(g2d, graphWidth, graphHeight);
         drawAxisValues(g2d, graphWidth, graphHeight);
-        drawBars(g2d, days, graphWidth, graphHeight);
+        renderGraphBars(g2d, days, graphWidth, graphHeight);
 
         drawLegends(g2d, graphWidth, days);
         drawAxisLabels(g2d);
@@ -230,39 +230,36 @@ public final class AdventOfCodeGraph {
         return font.deriveFont(affineTransform);
     }
 
-    private void drawBars(Graphics2D g2d, List<AdventDay> days, int graphWidth, int graphHeight) {
+    /** Draws the bars for each AdventDay. */
+    private void renderGraphBars(Graphics2D g2d, List<AdventDay> days, int graphWidth, int graphHeight) {
         int colWidth = graphWidth / 25;
-
-        int i = OFFSET_X1;
         int thickness = colWidth / 5;
 
+        int currentX = OFFSET_X1;
+
         for (AdventDay day : days) {
-            int currX = i + thickness + thickness / 4;
-
-            // Two stars
-            g2d.setPaint(GOLD);
-            int heightBar = calculateBarHeight(graphHeight, day.goldCount());
-            g2d.fillRect(currX, OFFSET_Y1 + (graphHeight - heightBar), thickness, heightBar);
-
-            currX += thickness;
-
-            // One star
-            g2d.setPaint(SILVER);
-            heightBar = calculateBarHeight(graphHeight, day.silverCount());
-            g2d.fillRect(currX, OFFSET_Y1 + (graphHeight - heightBar), thickness, heightBar);
-
-            currX += thickness;
-
-            // No stars
-            g2d.setPaint(GREY);
-            heightBar = calculateBarHeight(graphHeight, day.grayCount());
-            g2d.fillRect(currX, OFFSET_Y1 + (graphHeight - heightBar), thickness, heightBar);
-
-            i += graphWidth / 25;
+            renderStarCountBars(g2d, day, currentX, graphHeight, thickness);
+            currentX += colWidth;
         }
     }
 
-    private int calculateBarHeight(int maxHeight, int count) {
-        return maxHeight * count / MAX_PARTICIPANTS;
+    /** Draws bars for two stars, one star and no star of the given day. */
+    private void renderStarCountBars(Graphics2D g2d, AdventDay day, int startX, int graphHeight, int thickness) {
+        int xPosition = startX + thickness + thickness / 4;
+
+        renderSingleBar(g2d, GOLD, day.goldCount(), xPosition, graphHeight, thickness);
+        xPosition += thickness;
+
+        renderSingleBar(g2d, SILVER, day.silverCount(), xPosition, graphHeight, thickness);
+        xPosition += thickness;
+
+        renderSingleBar(g2d, GREY, day.grayCount(), xPosition, graphHeight, thickness);
+    }
+
+    /** Draws a single bar on the graph of the given color and given properties. */
+    private void renderSingleBar(Graphics2D g2d, Paint color, int count, int x, int graphHeight, int thickness) {
+        g2d.setPaint(color);
+        int heightBar = graphHeight * count / MAX_PARTICIPANTS;
+        g2d.fillRect(x, OFFSET_Y1 + (graphHeight - heightBar), thickness, heightBar);
     }
 }

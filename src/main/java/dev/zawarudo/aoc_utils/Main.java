@@ -14,12 +14,13 @@ import java.time.format.DateTimeFormatter;
 
 public class Main {
 
+    // 951576
+    // 1514956
     public static void main(String[] args) throws IOException {
         String session = loadToken();
         AdventOfCodeGraph graph = new AdventOfCodeGraph(2023, 1514956, session);
         graph.setBackground(Color.decode("#0F0F23"));
         BufferedImage image = graph.generateImage();
-
         String name = String.format("aoc_%s.png", getCurrentDateTime());
         File file = new File("./out/graphs/" + name);
         new File(file.getParent()).mkdirs();
