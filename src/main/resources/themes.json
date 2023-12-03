@@ -1,0 +1,16 @@
+[
+  {
+    "name" : "theme_aoc",
+    "background": "#0F0F23",
+    "gold": "#FFFF66",
+    "silver": "#9999CC",
+    "grey": "#333333"
+  },
+  {
+    "name": "theme_old",
+    "background": "#313338",
+    "gold": "#FFD700",
+    "silver": "#CDCDCD",
+    "grey": "FF8484"
+  }
+]
