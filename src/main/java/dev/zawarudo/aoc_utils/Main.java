@@ -1,6 +1,9 @@
 package dev.zawarudo.aoc_utils;
 
+import com.sun.jdi.CharType;
 import dev.zawarudo.aoc_utils.graph.AdventOfCodeGraph;
+import dev.zawarudo.aoc_utils.graph.BarChart;
+import dev.zawarudo.aoc_utils.graph.ChartType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,7 +21,7 @@ public class Main {
     // 1514956
     public static void main(String[] args) throws IOException {
         String session = loadToken();
-        AdventOfCodeGraph graph = new AdventOfCodeGraph(2023, 1514956, session);
+        AdventOfCodeGraph graph = AdventOfCodeGraph.createGraph(ChartType.BAR_CHART, 2022, 951576, session);
         graph.setBackground(Color.decode("#0F0F23"));
         BufferedImage image = graph.generateImage();
         String name = String.format("aoc_%s.png", getCurrentDateTime());
