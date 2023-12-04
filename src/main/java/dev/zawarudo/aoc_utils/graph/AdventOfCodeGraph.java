@@ -6,8 +6,8 @@ import dev.zawarudo.aoc_utils.data.AdventOfCodeAPI;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public abstract class AdventOfCodeGraph {
@@ -97,13 +97,13 @@ public abstract class AdventOfCodeGraph {
     }
 
     protected Font loadFontFromFile(float fontSize) {
-        try {
-            Font font = Font.createFont(Font.TRUETYPE_FONT, new File("./src/main/resources/ComicSansBold.ttf"));
-            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            ge.registerFont(font);
-            return font.deriveFont(fontSize);
-        } catch (FontFormatException | IOException e) {
-            throw new IllegalStateException("Error loading font file! Please check whether the file is at the right place.", e);
+        try (InputStream is = AdventOfCodeGraph.class.getResourceAsStream("/ComicSansBold.ttf")) {
+            if (is == null) {
+                throw new IllegalStateException("Font file not found at ./src/main/resources/ComicSansBold.ttf");
+            }
+            return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(fontSize);
+        } catch (IOException | FontFormatException e) {
+            throw new IllegalStateException("Error loading font file!", e);
         }
     }
 }

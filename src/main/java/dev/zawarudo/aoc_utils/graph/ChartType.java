@@ -1,6 +1,7 @@
 package dev.zawarudo.aoc_utils.graph;
 
 public enum ChartType {
-    BAR_CHART(),
-    AREA_CHART
+    AREA_CHART,
+    BAR_CHART,
+    STACKED_BAR_CHART
 }
