@@ -18,20 +18,29 @@ public abstract class AdventOfCodeGraph {
 
     protected static final int MAX_DAYS = 25;
 
-    protected static final int MAX_PARTICIPANTS = 200;
-    protected static final int ROWS = MAX_PARTICIPANTS / 10;
-
-    /** Width of the whole image. */
+    /**
+     * Width of the whole image.
+     */
     protected static final int IMAGE_WIDTH = 1500;
-    /** Height of the whole image. */
+    /**
+     * Height of the whole image.
+     */
     protected static final int IMAGE_HEIGHT = 1200;
-    /** Distance from the left edge. */
+    /**
+     * Distance from the left edge.
+     */
     protected static final int OFFSET_X1 = 150;
-    /** Distance from the right edge. */
+    /**
+     * Distance from the right edge.
+     */
     protected static final int OFFSET_X2 = 50;
-    /** Distance from the top edge. */
+    /**
+     * Distance from the top edge.
+     */
     protected static final int OFFSET_Y1 = 200;
-    /** Distance from the bottom edge. */
+    /**
+     * Distance from the bottom edge.
+     */
     protected static final int OFFSET_Y2 = 150;
 
     protected static final float FONT_SIZE = 25f;
@@ -41,6 +50,8 @@ public abstract class AdventOfCodeGraph {
     protected String sessionKey;
 
     protected Color background;
+    protected int maxCount;
+    protected int rows;
 
     protected AdventOfCodeGraph(int year, int leaderboardId, String sessionKey) {
         this.background = Color.WHITE;
@@ -69,6 +80,9 @@ public abstract class AdventOfCodeGraph {
         drawBackground(g2d, result);
 
         List<AdventDay> days = AdventOfCodeAPI.getAdventDays(year, leaderboardId, sessionKey);
+
+        maxCount = getMaxDayCount(days);
+        rows = calculateNumberRows();
         BufferedImage chart = generateChart(days);
 
         g2d.drawImage(chart, 0, 0, chart.getWidth(), chart.getHeight(), null);
@@ -106,5 +120,21 @@ public abstract class AdventOfCodeGraph {
         } catch (IOException | FontFormatException e) {
             throw new IllegalStateException("Error loading font file!", e);
         }
+    }
+
+    private int getMaxDayCount(List<AdventDay> days) {
+        int maxDayCount = days.stream()
+                .mapToInt(day -> day.goldCount() + day.silverCount() + day.grayCount())
+                .max()
+                .orElse(0);
+        return roundUp(maxDayCount);
+    }
+
+    private int roundUp(int number) {
+        return number > 100 ? (number + 9) / 10 * 10 : (number + 4) / 5 * 5;
+    }
+
+    private int calculateNumberRows() {
+        return maxCount > 100 ? maxCount / 10 : maxCount / 5;
     }
 }

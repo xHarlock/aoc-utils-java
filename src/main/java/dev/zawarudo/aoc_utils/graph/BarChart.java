@@ -20,7 +20,7 @@ public class BarChart extends AdventOfCodeGraph {
         setSmoothFont(g2d);
 
         int graphWidth = IMAGE_WIDTH - OFFSET_X1 - OFFSET_X2;
-        int graphHeight = (IMAGE_HEIGHT - OFFSET_Y1 - OFFSET_Y2) / ROWS * ROWS;
+        int graphHeight = (IMAGE_HEIGHT - OFFSET_Y1 - OFFSET_Y2) / rows * rows;
 
         drawGrid(g2d, graphWidth, graphHeight);
         drawAxisValues(g2d, graphWidth, graphHeight);
@@ -77,10 +77,10 @@ public class BarChart extends AdventOfCodeGraph {
         FontMetrics metrics = g2d.getFontMetrics(font);
 
         int colWidth = graphWidth / MAX_DAYS;
-        int rowHeight = graphHeight / ROWS;
+        int rowHeight = graphHeight / rows;
 
         int posX = OFFSET_X1;
-        int daysY = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % ROWS) / 3 * 2 - metrics.getHeight() / 2;
+        int daysY = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % rows) / 3 * 2 - metrics.getHeight() / 2;
 
         // Draw day numbers
         int count = 1;
@@ -94,7 +94,7 @@ public class BarChart extends AdventOfCodeGraph {
         count = 0;
 
         // Draw numbers of people
-        for (int i = 0; i <= ROWS; i++) {
+        for (int i = 0; i <= rows; i++) {
             String text = String.valueOf(count);
             g2d.drawString(text, posX - metrics.stringWidth(text) / 2, posY - i * rowHeight - metrics.getHeight() / 2 + metrics.getAscent());
             count += 10;
@@ -128,7 +128,7 @@ public class BarChart extends AdventOfCodeGraph {
     private void drawLegendSquares(Graphics2D g2d, int graphWidth, int graphHeight) {
         FontMetrics metrics = g2d.getFontMetrics();
 
-        int lineHeight = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % ROWS) / 4;
+        int lineHeight = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % rows) / 4;
         int textHeight = lineHeight - metrics.getHeight() / 2 + metrics.getAscent();
 
         int squareSize = (int) FONT_SIZE;
@@ -172,10 +172,10 @@ public class BarChart extends AdventOfCodeGraph {
         int y = OFFSET_Y1;
 
         int colWidth = graphWidth / MAX_DAYS;
-        int rowHeight = graphHeight / ROWS;
+        int rowHeight = graphHeight / rows;
 
         int counter = 0;
-        while (counter <= ROWS) {
+        while (counter <= rows) {
             int currentRowY = y + rowHeight * counter;
             g2d.drawLine(x, currentRowY, x + graphWidth, currentRowY);
             counter++;
@@ -218,7 +218,7 @@ public class BarChart extends AdventOfCodeGraph {
     /** Draws a single bar on the graph of the given color and given properties. */
     protected void renderSingleBar(Graphics2D g2d, Paint color, int count, int x, int graphHeight, int thickness) {
         g2d.setPaint(color);
-        int heightBar = graphHeight * count / MAX_PARTICIPANTS;
+        int heightBar = graphHeight * count / maxCount;
         g2d.fillRect(x, OFFSET_Y1 + (graphHeight - heightBar), thickness, heightBar);
     }
 }
