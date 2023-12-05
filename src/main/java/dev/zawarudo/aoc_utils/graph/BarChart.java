@@ -20,7 +20,7 @@ public class BarChart extends AdventOfCodeGraph {
         setSmoothFont(g2d);
 
         int graphWidth = IMAGE_WIDTH - OFFSET_X1 - OFFSET_X2;
-        int graphHeight = IMAGE_HEIGHT - OFFSET_Y1 - OFFSET_Y2;
+        int graphHeight = (IMAGE_HEIGHT - OFFSET_Y1 - OFFSET_Y2) / ROWS * ROWS;
 
         drawGrid(g2d, graphWidth, graphHeight);
         drawAxisValues(g2d, graphWidth, graphHeight);
@@ -77,24 +77,26 @@ public class BarChart extends AdventOfCodeGraph {
         FontMetrics metrics = g2d.getFontMetrics(font);
 
         int colWidth = graphWidth / MAX_DAYS;
-        int rowHeight = graphHeight / GROUP_SIZE;
+        int rowHeight = graphHeight / ROWS;
 
-        int x = OFFSET_X1;
-        int y = OFFSET_Y1;
-
-        int daysY = IMAGE_HEIGHT - OFFSET_Y2 / 6 * 5 - metrics.getHeight() / 2 + metrics.getAscent();
+        int posX = OFFSET_X1;
+        int daysY = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % ROWS) / 3 * 2 - metrics.getHeight() / 2;
 
         // Draw day numbers
         int count = 1;
-        for (int i = x + colWidth / 2; i < x + graphWidth; i += colWidth) {
+        for (int i = posX + colWidth / 2; i < posX + graphWidth; i += colWidth) {
             g2d.drawString(String.valueOf(count), i - metrics.stringWidth(String.valueOf(count)) / 2, daysY);
             count++;
         }
 
-        // Draw numbers of people
+        posX = OFFSET_X1 / 4 * 3;
+        int posY = OFFSET_Y1 + graphHeight;
         count = 0;
-        for (int i = y + graphHeight; i >= y; i -= rowHeight) {
-            g2d.drawString(String.valueOf(count), x - 35 - metrics.stringWidth(String.valueOf(count)) / 2, i + 10);
+
+        // Draw numbers of people
+        for (int i = 0; i <= ROWS; i++) {
+            String text = String.valueOf(count);
+            g2d.drawString(text, posX - metrics.stringWidth(text) / 2, posY - i * rowHeight - metrics.getHeight() / 2 + metrics.getAscent());
             count += 10;
         }
     }
@@ -108,25 +110,25 @@ public class BarChart extends AdventOfCodeGraph {
 
         String text = "Day";
         int startX = graphWidth / 2 + OFFSET_X1 - metrics.stringWidth(text) / 2;
-        int startY = IMAGE_HEIGHT - OFFSET_Y2 / 2 - metrics.getHeight() / 2 + metrics.getAscent();
+        int startY = IMAGE_HEIGHT - OFFSET_Y2 / 2;
 
         g2d.drawString(text, startX, startY);
 
         text = "People";
-        startX = 40; // TODO: Don't use magic numbers
+        startX = OFFSET_X1 / 3 - metrics.getHeight() / 2 + metrics.getAscent();
         startY = graphHeight / 2 + OFFSET_Y1 + metrics.stringWidth(text) / 2;
 
         g2d.setFont(rotateFont(font, -90));
         g2d.drawString(text, startX, startY);
 
         g2d.setFont(font);
-        drawLegendSquares(g2d, graphWidth);
+        drawLegendSquares(g2d, graphWidth, graphHeight);
     }
 
-    private void drawLegendSquares(Graphics2D g2d, int graphWidth) {
+    private void drawLegendSquares(Graphics2D g2d, int graphWidth, int graphHeight) {
         FontMetrics metrics = g2d.getFontMetrics();
 
-        int lineHeight = IMAGE_HEIGHT - OFFSET_Y2 / 5;
+        int lineHeight = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % ROWS) / 4;
         int textHeight = lineHeight - metrics.getHeight() / 2 + metrics.getAscent();
 
         int squareSize = (int) FONT_SIZE;
@@ -169,26 +171,18 @@ public class BarChart extends AdventOfCodeGraph {
         int x = OFFSET_X1;
         int y = OFFSET_Y1;
 
-        // Consider rounding errors
-        x += graphWidth % MAX_DAYS;
-        graphWidth -= graphWidth % MAX_DAYS;
-        y += graphHeight % GROUP_SIZE;
-        graphHeight -= graphHeight % GROUP_SIZE;
-
         int colWidth = graphWidth / MAX_DAYS;
-        int rowHeight = graphHeight / GROUP_SIZE;
-
-        g2d.drawRect(x, y, graphWidth, graphHeight);
+        int rowHeight = graphHeight / ROWS;
 
         int counter = 0;
-        while (counter < GROUP_SIZE) {
+        while (counter <= ROWS) {
             int currentRowY = y + rowHeight * counter;
             g2d.drawLine(x, currentRowY, x + graphWidth, currentRowY);
             counter++;
         }
 
         counter = 0;
-        while (counter < MAX_DAYS) {
+        while (counter <= MAX_DAYS) {
             int currentColX = x + colWidth * counter;
             g2d.drawLine(currentColX, y, currentColX, y + graphHeight);
             counter++;

@@ -18,14 +18,14 @@ public abstract class AdventOfCodeGraph {
 
     protected static final int MAX_PARTICIPANTS = 200;
     protected static final int MAX_DAYS = 25;
-    protected static final int GROUP_SIZE = MAX_PARTICIPANTS / 10;
+    protected static final int ROWS = MAX_PARTICIPANTS / 10;
 
     /** Width of the whole image. */
     protected static final int IMAGE_WIDTH = 1500;
     /** Height of the whole image. */
     protected static final int IMAGE_HEIGHT = 1200;
     /** Distance from the left edge. */
-    protected static final int OFFSET_X1 = 125;
+    protected static final int OFFSET_X1 = 150;
     /** Distance from the right edge. */
     protected static final int OFFSET_X2 = 50;
     /** Distance from the top edge. */
