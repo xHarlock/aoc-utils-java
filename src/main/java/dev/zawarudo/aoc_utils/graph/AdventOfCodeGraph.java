@@ -16,8 +16,9 @@ public abstract class AdventOfCodeGraph {
     protected static final Color ONE_STAR_COLOR = Color.decode("#9999CC");
     protected static final Color NO_STARS_COLOR = Color.decode("#ff8080");
 
-    protected static final int MAX_PARTICIPANTS = 200;
     protected static final int MAX_DAYS = 25;
+
+    protected static final int MAX_PARTICIPANTS = 200;
     protected static final int ROWS = MAX_PARTICIPANTS / 10;
 
     /** Width of the whole image. */

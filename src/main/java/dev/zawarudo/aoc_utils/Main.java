@@ -13,13 +13,14 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+// Amos' leaderboard id: 951576
+// Lu's leaderboard id: 1514956
+
 public class Main {
 
-    // 951576
-    // 1514956
     public static void main(String[] args) throws IOException {
         String session = loadToken();
-        AdventOfCodeGraph graph = AdventOfCodeGraph.createGraph(ChartType.STACKED_BAR_CHART, 2022, 951576, session);
+        AdventOfCodeGraph graph = AdventOfCodeGraph.createGraph(ChartType.STACKED_BAR_CHART, 2023, 1514956, session);
         graph.setBackground(Color.decode("#0F0F23"));
         BufferedImage image = graph.generateImage();
         String name = String.format("aoc_%s.png", getCurrentDateTime());
