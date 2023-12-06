@@ -8,7 +8,7 @@ This project is a Java wrapper for the Advent of Code (AoC) leaderboard. It allo
 ## Getting Started 🚀
 
 ### Prerequisites 🛠️
-- Java JDK 17 or higher
+- JDK 17 or higher
 - Maven (for building and running the project)
 
 ### Installation 💻
