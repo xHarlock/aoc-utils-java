@@ -2,9 +2,9 @@ package dev.zawarudo.aoc_utils;
 
 import dev.zawarudo.aoc_utils.graph.AdventOfCodeGraph;
 import dev.zawarudo.aoc_utils.graph.ChartType;
+import dev.zawarudo.aoc_utils.graph.GraphTheme;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +20,14 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         String session = loadToken();
+
         AdventOfCodeGraph graph = AdventOfCodeGraph.createGraph(ChartType.STACKED_BAR_CHART, 2023, 1514956, session);
-        graph.setBackgroundColor(Color.decode("#0F0F23"));
+        // graph.setTheme(GraphTheme.WOOD);
         BufferedImage image = graph.generateImage();
+
         String name = String.format("aoc_%s.png", getCurrentDateTime());
         File file = new File("./out/graphs/" + name);
         new File(file.getParent()).mkdirs();
-
         ImageIO.write(image, "png", file);
     }
 

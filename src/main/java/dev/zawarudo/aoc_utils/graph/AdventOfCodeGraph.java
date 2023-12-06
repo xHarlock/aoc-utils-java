@@ -9,14 +9,6 @@ import java.util.List;
 
 public abstract class AdventOfCodeGraph {
 
-    protected static final Color BOTH_STARS_COLOR = Color.decode("#FFFF66");
-    protected static final Color ONE_STAR_COLOR = Color.decode("#9999CC");
-    protected static final Color NO_STARS_COLOR = Color.decode("#ff8080");
-
-    protected Color backgroundColor;
-    protected static final Color TEXT_COLOR = Color.decode("#FFFFFF");
-    protected static final Color GRID_COLOR = Color.decode("#FFFFFF");
-
     protected static final int MAX_DAYS = 25;
 
     /**
@@ -50,6 +42,8 @@ public abstract class AdventOfCodeGraph {
     protected int leaderboardId;
     protected String sessionKey;
 
+    protected Theme theme;
+
     /**
      * The number of participants in the leaderboard.
      */
@@ -64,10 +58,11 @@ public abstract class AdventOfCodeGraph {
     protected int rows;
 
     protected AdventOfCodeGraph(int year, int leaderboardId, String sessionKey) {
-        this.backgroundColor = Color.WHITE;
         this.year = year;
         this.leaderboardId = leaderboardId;
         this.sessionKey = sessionKey;
+
+        theme = GraphTheme.AOC.load();
     }
 
     /**
@@ -81,13 +76,8 @@ public abstract class AdventOfCodeGraph {
         };
     }
 
-    /**
-     * Sets the background color of the graph. The default background color is white.
-     *
-     * @param color The {@link Color} to set the background to.
-     */
-    public void setBackgroundColor(Color color) {
-        backgroundColor = color;
+    public void setTheme(GraphTheme theme) {
+        this.theme = theme.load();
     }
 
     public BufferedImage generateImage() {
@@ -112,16 +102,14 @@ public abstract class AdventOfCodeGraph {
     protected abstract BufferedImage generateChart(List<AdventDay> days);
 
     protected void drawBackground(Graphics2D g2d, BufferedImage image) {
-        if (backgroundColor != null) {
-            g2d.setPaint(backgroundColor);
-            g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
-        }
+        g2d.setPaint(theme.getBackgroundColor());
+        g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
     }
 
     protected void drawTitle(Graphics2D g2d) {
         Font font = FontUtils.loadFontFromFile(FONT_SIZE * 2);
         g2d.setFont(font);
-        g2d.setPaint(Color.WHITE);
+        g2d.setPaint(theme.getTextColor());
 
         String titleString = String.format("Advent of Code %d", year);
         FontMetrics metrics = g2d.getFontMetrics();
@@ -136,7 +124,7 @@ public abstract class AdventOfCodeGraph {
     }
 
     protected void drawGrid(Graphics2D g2d, int graphWidth, int graphHeight) {
-        g2d.setPaint(Color.WHITE);
+        g2d.setPaint(theme.getGridColor());
 
         int x = OFFSET_X1;
         int y = OFFSET_Y1;
@@ -162,7 +150,7 @@ public abstract class AdventOfCodeGraph {
     protected void drawLegends(Graphics2D g2d) {
         Font font = FontUtils.loadFontFromFile(FONT_SIZE);
         g2d.setFont(font);
-        g2d.setPaint(Color.WHITE);
+        g2d.setPaint(theme.getTextColor());
 
         FontMetrics metrics = g2d.getFontMetrics(font);
 
@@ -178,8 +166,7 @@ public abstract class AdventOfCodeGraph {
     protected void drawAxisValues(Graphics2D g2d, int graphWidth, int graphHeight) {
         Font font = FontUtils.loadFontFromFile(FONT_SIZE);
         g2d.setFont(font);
-
-        g2d.setPaint(Color.WHITE);
+        g2d.setPaint(theme.getTextColor());
 
         FontMetrics metrics = g2d.getFontMetrics(font);
 
@@ -211,7 +198,7 @@ public abstract class AdventOfCodeGraph {
     protected void drawAxisLabels(Graphics2D g2d, int graphWidth, int graphHeight) {
         Font font = FontUtils.loadFontFromFile(FONT_SIZE);
         g2d.setFont(font);
-        g2d.setPaint(Color.WHITE);
+        g2d.setPaint(theme.getTextColor());
 
         FontMetrics metrics = g2d.getFontMetrics();
 
@@ -249,7 +236,7 @@ public abstract class AdventOfCodeGraph {
 
         int positionX = startX - elementWidth / 2; // Position of square + text
 
-        g2d.setColor(BOTH_STARS_COLOR);
+        g2d.setColor(theme.getTwoStarsColor());
         g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
         g2d.drawString(text, positionX + 2 * squareSize, textHeight);
 
@@ -258,7 +245,7 @@ public abstract class AdventOfCodeGraph {
 
         positionX = startX + separation - elementWidth / 2;
 
-        g2d.setColor(ONE_STAR_COLOR);
+        g2d.setColor(theme.getOneStarColor());
         g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
         g2d.drawString(text, positionX + 2 * squareSize, textHeight);
 
@@ -267,7 +254,7 @@ public abstract class AdventOfCodeGraph {
 
         positionX = startX + 2 * separation - elementWidth / 2;
 
-        g2d.setColor(NO_STARS_COLOR);
+        g2d.setColor(theme.getNoStarsColor());
         g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
         g2d.drawString(text, positionX + 2 * squareSize, textHeight);
     }

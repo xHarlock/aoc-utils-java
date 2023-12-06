@@ -16,9 +16,9 @@ public class StackedBarChart extends BarChart {
         int yPos = 0;
         thickness *= 3;
 
-        yPos = renderSingleBar(g2d, BOTH_STARS_COLOR, day.goldCount(), xPos, yPos, graphHeight, thickness);
-        yPos = renderSingleBar(g2d, ONE_STAR_COLOR, day.silverCount(), xPos, yPos, graphHeight, thickness);
-        renderSingleBar(g2d, NO_STARS_COLOR, day.grayCount(), xPos, yPos, graphHeight, thickness);
+        yPos = renderSingleBar(g2d, theme.getTwoStarsColor(), day.goldCount(), xPos, yPos, graphHeight, thickness);
+        yPos = renderSingleBar(g2d, theme.getOneStarColor(), day.silverCount(), xPos, yPos, graphHeight, thickness);
+        renderSingleBar(g2d, theme.getNoStarsColor(), day.grayCount(), xPos, yPos, graphHeight, thickness);
     }
 
     private int renderSingleBar(Graphics2D g2d, Paint color, int count, int x, int y, int graphHeight, int thickness) {

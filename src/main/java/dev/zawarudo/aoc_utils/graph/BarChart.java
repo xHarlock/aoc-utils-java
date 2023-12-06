@@ -51,11 +51,11 @@ public class BarChart extends AdventOfCodeGraph {
     /** Draws bars for two stars, one star and no star of the given day. */
     protected void renderStarCountBars(Graphics2D g2d, AdventDay day, int startX, int graphHeight, int thickness) {
         int xPos = startX + thickness + thickness / 4;
-        renderSingleBar(g2d, BOTH_STARS_COLOR, day.goldCount(), xPos, graphHeight, thickness);
+        renderSingleBar(g2d, theme.getTwoStarsColor(), day.goldCount(), xPos, graphHeight, thickness);
         xPos += thickness;
-        renderSingleBar(g2d, ONE_STAR_COLOR, day.silverCount(), xPos, graphHeight, thickness);
+        renderSingleBar(g2d, theme.getOneStarColor(), day.silverCount(), xPos, graphHeight, thickness);
         xPos += thickness;
-        renderSingleBar(g2d, NO_STARS_COLOR, day.grayCount(), xPos, graphHeight, thickness);
+        renderSingleBar(g2d, theme.getNoStarsColor(), day.grayCount(), xPos, graphHeight, thickness);
     }
 
     /** Draws a single bar on the graph of the given color and given properties. */
