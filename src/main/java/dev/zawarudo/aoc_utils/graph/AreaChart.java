@@ -7,7 +7,7 @@ import java.util.List;
 
 public class AreaChart extends AdventOfCodeGraph {
 
-    AreaChart(int year, int leaderboardId, String sessionKey) {
+    public AreaChart(int year, int leaderboardId, String sessionKey) {
         super(year, leaderboardId, sessionKey);
     }
 

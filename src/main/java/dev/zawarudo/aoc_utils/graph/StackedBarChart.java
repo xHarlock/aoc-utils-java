@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class StackedBarChart extends BarChart {
 
-    StackedBarChart(int year, int leaderboardId, String sessionKey) {
+    public StackedBarChart(int year, int leaderboardId, String sessionKey) {
         super(year, leaderboardId, sessionKey);
     }
 

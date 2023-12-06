@@ -4,10 +4,7 @@ import dev.zawarudo.aoc_utils.data.AdventDay;
 import dev.zawarudo.aoc_utils.data.AdventOfCodeAPI;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public abstract class AdventOfCodeGraph {
@@ -15,6 +12,10 @@ public abstract class AdventOfCodeGraph {
     protected static final Color BOTH_STARS_COLOR = Color.decode("#FFFF66");
     protected static final Color ONE_STAR_COLOR = Color.decode("#9999CC");
     protected static final Color NO_STARS_COLOR = Color.decode("#ff8080");
+
+    protected Color backgroundColor;
+    protected static final Color TEXT_COLOR = Color.decode("#FFFFFF");
+    protected static final Color GRID_COLOR = Color.decode("#FFFFFF");
 
     protected static final int MAX_DAYS = 25;
 
@@ -49,19 +50,35 @@ public abstract class AdventOfCodeGraph {
     protected int leaderboardId;
     protected String sessionKey;
 
-    protected Color background;
+    /**
+     * The number of participants in the leaderboard.
+     */
+    protected int participants;
+    /**
+     * The rounded up number of participants.
+     */
     protected int maxCount;
+    /**
+     * The number of rows the grid should have.
+     */
     protected int rows;
 
     protected AdventOfCodeGraph(int year, int leaderboardId, String sessionKey) {
-        this.background = Color.WHITE;
+        this.backgroundColor = Color.WHITE;
         this.year = year;
         this.leaderboardId = leaderboardId;
         this.sessionKey = sessionKey;
     }
 
+    /**
+     * Initializes a graph object of the given graph type and properties.
+     */
     public static AdventOfCodeGraph createGraph(ChartType type, int year, int leaderboardId, String sessionKey) {
-        return GraphFactory.createGraph(type, year, leaderboardId, sessionKey);
+        return switch (type) {
+            case BAR_CHART -> new BarChart(year, leaderboardId, sessionKey);
+            case AREA_CHART -> new AreaChart(year, leaderboardId, sessionKey);
+            case STACKED_BAR_CHART -> new StackedBarChart(year, leaderboardId, sessionKey);
+        };
     }
 
     /**
@@ -69,8 +86,8 @@ public abstract class AdventOfCodeGraph {
      *
      * @param color The {@link Color} to set the background to.
      */
-    public void setBackground(Color color) {
-        background = color;
+    public void setBackgroundColor(Color color) {
+        backgroundColor = color;
     }
 
     public BufferedImage generateImage() {
@@ -81,7 +98,8 @@ public abstract class AdventOfCodeGraph {
 
         List<AdventDay> days = AdventOfCodeAPI.getAdventDays(year, leaderboardId, sessionKey);
 
-        maxCount = getMaxDayCount(days);
+        participants = getParticipantCount(days);
+        maxCount = roundUp(participants);
         rows = calculateNumberRows();
         BufferedImage chart = generateChart(days);
 
@@ -94,40 +112,171 @@ public abstract class AdventOfCodeGraph {
     protected abstract BufferedImage generateChart(List<AdventDay> days);
 
     protected void drawBackground(Graphics2D g2d, BufferedImage image) {
-        if (background != null) {
-            g2d.setPaint(background);
+        if (backgroundColor != null) {
+            g2d.setPaint(backgroundColor);
             g2d.fillRect(0, 0, image.getWidth(), image.getHeight());
         }
     }
 
-    protected void setSmoothFont(Graphics2D g2d) {
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+    protected void drawTitle(Graphics2D g2d) {
+        Font font = FontUtils.loadFontFromFile(FONT_SIZE * 2);
+        g2d.setFont(font);
+        g2d.setPaint(Color.WHITE);
+
+        String titleString = String.format("Advent of Code %d", year);
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        int textWidth = metrics.stringWidth(titleString);
+        int startX = (IMAGE_WIDTH - textWidth) / 2;
+
+        int topArea = OFFSET_Y1 / 4 * 3;
+        int startY = topArea / 2 - metrics.getHeight() / 2 + metrics.getAscent();
+
+        g2d.drawString(titleString, startX, startY);
     }
 
-    protected Font rotateFont(Font font, double ang) {
-        AffineTransform affineTransform = new AffineTransform();
-        affineTransform.rotate(Math.toRadians(ang), 0, 0);
-        return font.deriveFont(affineTransform);
-    }
+    protected void drawGrid(Graphics2D g2d, int graphWidth, int graphHeight) {
+        g2d.setPaint(Color.WHITE);
 
-    protected Font loadFontFromFile(float fontSize) {
-        try (InputStream is = AdventOfCodeGraph.class.getResourceAsStream("/ComicSansBold.ttf")) {
-            if (is == null) {
-                throw new IllegalStateException("Font file not found at ./src/main/resources/ComicSansBold.ttf");
-            }
-            return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(fontSize);
-        } catch (IOException | FontFormatException e) {
-            throw new IllegalStateException("Error loading font file!", e);
+        int x = OFFSET_X1;
+        int y = OFFSET_Y1;
+
+        int colWidth = graphWidth / MAX_DAYS;
+        int rowHeight = graphHeight / rows;
+
+        int counter = 0;
+        while (counter <= rows) {
+            int currentRowY = y + rowHeight * counter;
+            g2d.drawLine(x, currentRowY, x + graphWidth, currentRowY);
+            counter++;
+        }
+
+        counter = 0;
+        while (counter <= MAX_DAYS) {
+            int currentColX = x + colWidth * counter;
+            g2d.drawLine(currentColX, y, currentColX, y + graphHeight);
+            counter++;
         }
     }
 
-    private int getMaxDayCount(List<AdventDay> days) {
-        int maxDayCount = days.stream()
+    protected void drawLegends(Graphics2D g2d) {
+        Font font = FontUtils.loadFontFromFile(FONT_SIZE);
+        g2d.setFont(font);
+        g2d.setPaint(Color.WHITE);
+
+        FontMetrics metrics = g2d.getFontMetrics(font);
+
+        int legendY = OFFSET_Y1 - OFFSET_Y1 / 5 - metrics.getHeight() / 2 + metrics.getAscent();
+
+        String leaderboardString = String.format("Leaderboard ID: %d", leaderboardId);
+        String participantsString = String.format("Participants: %d", participants);
+
+        g2d.drawString(leaderboardString, IMAGE_WIDTH / 3 - metrics.stringWidth(leaderboardString) / 2, legendY);
+        g2d.drawString(participantsString, IMAGE_WIDTH / 3 * 2 - metrics.stringWidth(participantsString) / 2, legendY);
+    }
+
+    protected void drawAxisValues(Graphics2D g2d, int graphWidth, int graphHeight) {
+        Font font = FontUtils.loadFontFromFile(FONT_SIZE);
+        g2d.setFont(font);
+
+        g2d.setPaint(Color.WHITE);
+
+        FontMetrics metrics = g2d.getFontMetrics(font);
+
+        int colWidth = graphWidth / MAX_DAYS;
+        int rowHeight = graphHeight / rows;
+
+        int posX = OFFSET_X1;
+        int daysY = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % rows) / 3 * 2 - metrics.getHeight() / 2;
+
+        // Draw day numbers
+        int count = 1;
+        for (int i = posX + colWidth / 2; i < posX + graphWidth; i += colWidth) {
+            g2d.drawString(String.valueOf(count), i - metrics.stringWidth(String.valueOf(count)) / 2, daysY);
+            count++;
+        }
+
+        posX = OFFSET_X1 / 4 * 3;
+        int posY = OFFSET_Y1 + graphHeight;
+        count = 0;
+
+        // Draw numbers of people
+        for (int i = 0; i <= rows; i++) {
+            String text = String.valueOf(count);
+            g2d.drawString(text, posX - metrics.stringWidth(text) / 2, posY - i * rowHeight - metrics.getHeight() / 2 + metrics.getAscent());
+            count += 10;
+        }
+    }
+
+    protected void drawAxisLabels(Graphics2D g2d, int graphWidth, int graphHeight) {
+        Font font = FontUtils.loadFontFromFile(FONT_SIZE);
+        g2d.setFont(font);
+        g2d.setPaint(Color.WHITE);
+
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        String text = "Day";
+        int startX = graphWidth / 2 + OFFSET_X1 - metrics.stringWidth(text) / 2;
+        int startY = IMAGE_HEIGHT - OFFSET_Y2 / 2;
+
+        g2d.drawString(text, startX, startY);
+
+        text = "People";
+        startX = OFFSET_X1 / 3 - metrics.getHeight() / 2 + metrics.getAscent();
+        startY = graphHeight / 2 + OFFSET_Y1 + metrics.stringWidth(text) / 2;
+
+        g2d.setFont(FontUtils.rotateFont(font, -90));
+        g2d.drawString(text, startX, startY);
+
+        g2d.setFont(font);
+        drawLegendSquares(g2d, graphWidth, graphHeight);
+    }
+
+    protected void drawLegendSquares(Graphics2D g2d, int graphWidth, int graphHeight) {
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        int lineHeight = IMAGE_HEIGHT - (OFFSET_Y2 + graphHeight % rows) / 4;
+        int textHeight = lineHeight - metrics.getHeight() / 2 + metrics.getAscent();
+
+        int squareSize = (int) FONT_SIZE;
+        int squareHeight = lineHeight - squareSize / 2;
+
+        int startX = graphWidth / 6 + OFFSET_X1;
+        int separation = graphWidth / 3;
+
+        String text = "Two Stars";
+        int elementWidth = (2 * squareSize + metrics.stringWidth(text)); // Width of square + text
+
+        int positionX = startX - elementWidth / 2; // Position of square + text
+
+        g2d.setColor(BOTH_STARS_COLOR);
+        g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
+        g2d.drawString(text, positionX + 2 * squareSize, textHeight);
+
+        text = "One Star";
+        elementWidth = (2 * squareSize + metrics.stringWidth(text));
+
+        positionX = startX + separation - elementWidth / 2;
+
+        g2d.setColor(ONE_STAR_COLOR);
+        g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
+        g2d.drawString(text, positionX + 2 * squareSize, textHeight);
+
+        text = "No Star";
+        elementWidth = (2 * squareSize + metrics.stringWidth(text));
+
+        positionX = startX + 2 * separation - elementWidth / 2;
+
+        g2d.setColor(NO_STARS_COLOR);
+        g2d.fillRect(positionX, squareHeight, squareSize, squareSize);
+        g2d.drawString(text, positionX + 2 * squareSize, textHeight);
+    }
+
+    private int getParticipantCount(List<AdventDay> days) {
+        return days.stream()
                 .mapToInt(day -> day.goldCount() + day.silverCount() + day.grayCount())
                 .max()
                 .orElse(0);
-        return roundUp(maxDayCount);
     }
 
     private int roundUp(int number) {

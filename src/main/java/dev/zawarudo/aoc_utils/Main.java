@@ -21,7 +21,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         String session = loadToken();
         AdventOfCodeGraph graph = AdventOfCodeGraph.createGraph(ChartType.STACKED_BAR_CHART, 2023, 1514956, session);
-        graph.setBackground(Color.decode("#0F0F23"));
+        graph.setBackgroundColor(Color.decode("#0F0F23"));
         BufferedImage image = graph.generateImage();
         String name = String.format("aoc_%s.png", getCurrentDateTime());
         File file = new File("./out/graphs/" + name);
