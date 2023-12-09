@@ -1,8 +1,5 @@
 # 🌟 Advent of Code Utils 🌟
 
-Java wrapper for fetching data from the Advent of Code website and generating beautiful graphs
-
-## Overview 📖
 This project is a Java wrapper for the Advent of Code (AoC) leaderboard. It allows users to fetch data from an AoC leaderboard using its ID and generate beautiful graphs based on that data.
 
 ## Getting Started 🚀
