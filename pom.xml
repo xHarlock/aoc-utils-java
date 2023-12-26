@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>dev.zawarudo</groupId>
     <artifactId>aoc-utils</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>AoC Utilities</name>
     <packaging>jar</packaging>
 
@@ -107,8 +107,8 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub xHarlock Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/xharlock/aoc-utils-java</url>
+            <name>GitHub zaw4rud0 Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/zaw4rud0/aoc-utils-java</url>
         </repository>
     </distributionManagement>
 </project>
