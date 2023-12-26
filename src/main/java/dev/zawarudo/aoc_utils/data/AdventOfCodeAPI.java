@@ -67,7 +67,7 @@ public final class AdventOfCodeAPI {
         ZonedDateTime dateTime = ZonedDateTime.now(ZoneId.of("Europe/Zurich"));
 
         if (dateTime.getYear() == year && dateTime.getMonthValue() == 12) {
-            maxDay = dateTime.getDayOfMonth();
+            maxDay = Math.min(maxDay, dateTime.getDayOfMonth());
         }
 
         for (int i = 1; i <= maxDay; i++) {
