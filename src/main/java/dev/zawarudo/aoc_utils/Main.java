@@ -2,7 +2,6 @@ package dev.zawarudo.aoc_utils;
 
 import dev.zawarudo.aoc_utils.graph.AdventOfCodeGraph;
 import dev.zawarudo.aoc_utils.graph.ChartType;
-import dev.zawarudo.aoc_utils.graph.GraphTheme;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
