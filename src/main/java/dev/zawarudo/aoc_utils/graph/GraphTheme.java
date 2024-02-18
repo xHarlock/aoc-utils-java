@@ -21,9 +21,9 @@ public enum GraphTheme {
 
     Theme load() {
         try {
-            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("themes.json");
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("graph_themes.json");
             if (inputStream == null) {
-                throw new IllegalStateException("Failed to load themes.json! Check that the file is at the right location.");
+                throw new IllegalStateException("Failed to load graph_themes.json! Check that the file is at the right location.");
             }
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -32,7 +32,7 @@ public enum GraphTheme {
 
             return themes.stream().filter(t -> name.equals(t.getName())).findFirst().orElseThrow();
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to load themes.json! Check that the file is at the right location.", e);
+            throw new IllegalStateException("Failed to load graph_themes.json! Check that the file is at the right location.", e);
         }
     }
 }

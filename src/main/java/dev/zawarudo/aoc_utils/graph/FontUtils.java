@@ -22,7 +22,7 @@ final class FontUtils {
     }
 
     static Font loadFontFromFile(float fontSize) {
-        try (InputStream is = AdventOfCodeGraph.class.getResourceAsStream("/ComicSansBold.ttf")) {
+        try (InputStream is = AdventOfCodeGraph.class.getResourceAsStream("/fonts/ComicSansBold.ttf")) {
             if (is == null) {
                 throw new IllegalStateException("Font file not found at ./src/main/resources/ComicSansBold.ttf");
             }
